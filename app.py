@@ -41,7 +41,7 @@ def get_alunos():
 
 @app.route('/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def get_aluno_by_id(id):
-
+    answer = ''
     try:
         if request.method == 'GET':
             answer = alunos[id]
@@ -54,6 +54,20 @@ def get_aluno_by_id(id):
     except IndexError:
         answer = {'status': 'erro', 'mensagem': 'Aluno de id {} não existe'.format(id)}
     return jsonify(answer)
+
+
+@app.route('/<string:name>')
+def get_aluno_by_name(name):
+    alunos_encontrados = []
+
+    for aluno in alunos:
+        if name.lower() in aluno['nome'].lower():
+            alunos_encontrados.append(aluno)
+        if alunos_encontrados:
+            return jsonify(alunos_encontrados)
+        else:
+            answer = {'status': 'erro', 'mensagem': 'não foi encontrado aluno com o nome fornecido'}
+            return jsonify(answer)
 
 
 if __name__ == '__main__':
